@@ -1,0 +1,20 @@
+Step 1:
+Start with creating a new file docker-compose.yaml
+
+Step 2:
+add the following variables to the file
+version: '3'                                                --> which version of kafka is in use
+services:                                                   --> services which are to be declared and used eg zookeeper and kaafka
+    zookeeper:                                              --> zookeeper service which is to be declared to used
+        image: wurstmeister/zookeeper                       --> image of the zookeeper which is to be used
+        container_name: Zookeeper_Nasirul                   --> name of the zookeeper container 
+        ports:                                              --> port on which it will run port:internal port
+            - "2181:2181"
+    kafka:                                                  --> Kafka service
+        image: wurstmeister/kafka                           --> image of the Kafka service which is to be used
+        container_name: Kafka_Nasirul                       --> container name of kafka service
+        ports:                                              --> port on which kafka will run
+            - "9092:9092"                   
+        environment:                                        --> environment variables of the kafka which determines kafka is running where
+            KAFKA_ADVERTISED_HOST_NAME: localhost           --> hostname of the kafka service can be an ip also
+            KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181          --> connect kafka to zookeeper service mentioned

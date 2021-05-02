@@ -1,0 +1,33 @@
+Step 1:
+use this command for the docker-compose.yaml file for airflow in docker
+curl -Lfo https://airflow.apache.org/docs/apache-airflow/stable/docker-compose.yamlhttps://airflow.apache.org/docs/apache-airflow/stable/docker-compose.yaml
+
+Step 2:
+use this command to create 3 folders 
+mkdir dags logs plugins
+
+Step 3:
+run this command to init airflow in docker
+docker-compose up airflow-init
+
+Step 4:
+run this command inside the folder to start airflow
+docker-compose up
+or
+Start it using Docker Desktop App from the container/apps section for it to run in background
+To stop the docker-compose
+docker-compose down
+
+Step 5:
+use this command to check if its running properly or not
+docker ps
+
+Step 6:
+optional: to run the airflow cmd commands use this
+docker exec <any id of the running instances> airflow <command, eg version>
+docker exec 68bdba3da6a0 airflow version
+
+Step 7:
+To use API add a new variable to environment list AIRFLOW__API__AUTH_BACKEND: 'airflow.api.auth.backend.basic_auth'
+Access the API using
+curl -X GET --user "airflow:airflow" "https://localhost:8080/api/v1/dags"
