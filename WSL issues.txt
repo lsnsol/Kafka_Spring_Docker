@@ -1,0 +1,73 @@
+UBUNTU WSL ISSUES:
+
+1. unable to resolve hostname
+BASH:	sudo vi /etc/resolv.conf
+FILE:	nameserver 8.8.8.8
+FILE:	nameserver 8.8.4.4
+
+2. check version of distribution
+BASH:	lsb_release -a
+
+3. check running processes
+BASH:	ps ax
+
+4. ssh connect to host localhost port 22: connection refused
+BASH:	sudo apt remove openssh-server
+BASH:	sudo apt install openssh-server
+BASH:	sudo service ssh start
+
+5. localhost: lurisan@localhost: Permission denied (publickey).
+BASH:	sudo rm -rf ~/.ssh
+BASH:	ssh-keygen
+BASH:	sudo cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+BASH:	chmod -R 750 ~/.ssh/authorized_keys
+BASH:	sudo /etc/init.d/ssh start
+
+6. remove installed packages
+BASH:	sudo apt-get --purge remove <name of packeage>
+BASH:	sudo apt-get -y autoremove
+BASH:	sudo apt-get -y autoclean
+
+7. installing mariadb on ubuntu
+BASH:	sudo apt install mariadb-server
+BASH:	sudo mkdir /var/run/mysqlid
+BASH:	sudo /etc/init.d/mysql start
+BASH:	sudo mysql_secure_installation
+MARIA:	create user 'lurisan'@'%' identified by 'lurisan';
+MARIA:	GRANT USAGE ON *.* TO 'lurisan'@'%' IDENTIFIED BY 'lurisan';
+MARIA:	flush privileges
+MARIA:	exit
+BASH:	sqoop list-databases --connect jdbc:mysql://localhost --username lurisan --password lurisan
+
+8. Running on fresh startup
+BASH:	sudo service ssh start
+BASH:	sudo service mysql start
+
+8. running hadoop: always format datanode and namenode together
+BASH:	hadoop namenode -format
+BASH:	hadoop datanode -format
+BASH:	start-dfs.sh && start-yarn.sh
+BASH:	jps
+
+it should run namenode, datanode, secondaryNameNode, resourceManager, nodeManager, jps
+
+9. sqoop importaing data from mysql to hive (run hive where schema is created)
+BASH:	sqoop list-databases --connect jdbc:mysql://localhost/ --username lurisan --password lurisan
+BASH:	sqoop list-tables --connect jdbc:mysql://localhost/covid19 --username lurisan --password lurisan
+BASH:	sqoop import --connect jdbc:mysql://localhost/covid19 
+	--username lurisan 
+	--password lurisan 
+	--split-by id 
+	--columns id,name 
+	--table covid_bussiness 
+	--target-dir /hive_tmp/covid19 
+	--fields-terminated-by ',' 
+	--hive-import 
+	--create-hive-table 
+	--hive-table covid19.covid_bussiness_hive
+BASH:	hive
+HIVE:	use default
+HIVE:	select * from covid_bussiness_hive
+
+for failed hive imports run this then run sqoop command
+BASH:	hadoop fs -rm -r /hive_tmp/covid19

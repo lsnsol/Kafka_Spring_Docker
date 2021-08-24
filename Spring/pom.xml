@@ -7,38 +7,80 @@
 		<version>2.5.0-SNAPSHOT</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.nasirul_kafka</groupId>
-	<artifactId>Kafka</artifactId>
+	<groupId>com.nasirul.kafka</groupId>
+	<artifactId>Kafka_Spring_Spark_Airflow</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Kafka</name>
-	<description>Demo Kafka with Springboot</description>
+	<description>Demo Kafka, Spark, Airflow with Springboot on Docker</description>
 	<properties>
 		<java.version>16</java.version>
+		<scala.version>2.11</scala.version>
+		<scala.compat.version>2.11	</scala.compat.version>
+		<spark.version>2.4.6</spark.version>
 	</properties>
 	<dependencies>
+		<!-- Springboot Web -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.kafka</groupId>
-			<artifactId>kafka-streams</artifactId>
-		</dependency>
+		<!-- Springboot Kafka Support -->
 		<dependency>
 			<groupId>org.springframework.kafka</groupId>
 			<artifactId>spring-kafka</artifactId>
 		</dependency>
+		
+		<!-- Apache Kafka Stream -->
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka-streams</artifactId>
+		</dependency>
+		
+		<!-- Scala Library -->
+		<dependency>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-library</artifactId>
+			<version>${scala.version}</version>
+		</dependency>
+		
+		<!-- Apache Spark Core -->
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-core_${scala.compat.version}</artifactId>
+			<version>${spark.version}</version>
+		</dependency>
+		<!-- Apache Spark SQL -->
+		<!-- <dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-sql_${scala.compat.version}</artifactId>
+			<version>${spark.version}</version>
+		</dependency> -->
+		<!-- Apache Spark Hive -->
+		<!-- <dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-hive_${scala.compat.version}</artifactId>
+			<version>${spark.version}</version>
+		</dependency> -->
+		<!-- Apache Spark MLLIB -->
+		<!-- <dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-mllib_2.11</artifactId>
+			<version>${spark.version}</version>
+		</dependency> -->
+		<!-- Apche Spark Streaming -->
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-streaming_${scala.compat.version}</artifactId>
+			<version>${spark.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- Apache Spark Streaming Kafka -->
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-streaming-kafka_2.11</artifactId>
+			<version>1.6.3</version>
+		</dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.kafka</groupId>
-			<artifactId>spring-kafka-test</artifactId>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 
 	<build>

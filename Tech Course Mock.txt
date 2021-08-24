@@ -1,0 +1,388 @@
+*********************************************************************************************************************************
+T1 - Building modern web apps at scale                          - https://play.fresco.me/Course/1321
+T2 - Working with Modern Data Repositories                	- https://play.fresco.me/course/1380 
+T3 - Machine First and Intelligent Business Processes     	- https://play.fresco.me/course/1384
+T4 - Integrating Distributed Ecosystems                         - https://play.fresco.me/course/1383 
+T5 - Extreme Automation Leveraging the Best of Cloud  		- https://play.fresco.me/Course/1376 
+*********************************************************************************************************************************
+Tech Assesment 1:
+	* ReactJS
+	* NodeJS
+	* ExpressJS
+	* MongoDb
+------------------------------------------------------------------------------------------------
+
+*********************************************************************************************************************************
+Tech Assesment 2:
+	* hadoop
+	* sqoop
+	* hive
+	* cassandra
+	* spark
+	* flume
+	* pig
+------------------------------------------------------------------------------------------------
+Commands to import CSV to MYSQL:
+------------------------------------------------------------------------------------------------
+CMD: 		mysql --user=root --password=root
+MYSQL SHELL:	set global local_infile=1;
+MYSQL:		exit
+CMD:		mysql --local-infile=1 --user=root --password=root
+MYSQL SHELL:	create database test;
+MYSQL SHELL:	use test;
+MYSQL SHELL:	create table test(id int, name varchar(255));
+MYSQL SHELL:	load data local infile 'path-to-file' into table test fields terminated by ',' lines terminated by '\n' ignore 1 rows;
+
+MYSQL SHELL:	system cls (clear screen in windows)
+*********************************************************************************************************************************
+------------------------------------------------------------------------------------------------
+Scala Spark Querying
+------------------------------------------------------------------------------------------------
+CMD:		spark-shell
+Spark Shell:	import org.apache.spark.sql.SparkSession
+Spark Shell:	val sqlContext = new org.apache.spark.sql.SQLContext(sc)
+Spark Shell:	val data = sqlContext.read.json("path to file")
+Spark Shell:	data.show()
+Spark Shell: 	data.registerTempTable("name of table eg: dataset")
+Spark Shell:	sqlContext.sql("SELECT * FROM dataset WHERE age=22").show()
+Spark Shell:	val broadcastVar = sc.broadcast(Array(1,2,3,4,5))
+Spark Shell: 	:type broadcastVar
+Spark Shell:	broadcastVar.value
+Spark Shell:	val accum = sc.longAccumulator("My Accumulator")
+Spark Shell:	sc.parallelize(Array(1,2,3,4,5,6,7,8,9)).foreach(x => accum.add(x))
+Spark Shell:	accum.value
+Spark Shell:	val newrdd = spark.read.textFile("path to text file").rdd
+Spark Shell:	val output = newrdd.flatMap(line=> line.split(" ")).map(word=> (word,1)).reduceByKey(_+_)
+Spark Shell:	output.saveAsTextFile("path to file")
+
+Spark Shell:	val data = spark.read.csv("./Spark/matches.csv").rdd
+Spark Shell:	import org.apache.spark.sql.Row
+Spark Shell:	val mofm = sc.parallelize(data.collect().map(x=>(x(13),1))
+Spark Shell:	val reduced_rdd = mofm.reduceByKey(_ + _).map(item => item.swap).sortByKey(false).take(5)
+Spark Shell:	sc.parallelize(reduced_rdd).saveAsTextFile("path to file")
+*********************************************************************************************************************************
+------------------------------------------------------------------------------------------------
+Cassandra Installation and Querying (Ubuntu)
+------------------------------------------------------------------------------------------------
+CMD:		echo "deb http://www.apache.org/dist/cassandra/debian 311x main" | tee -a /etc/apt/sources.list.d/cassandra.sources.list
+CMD:		curl https://www.apache.org/dist/cassandra/KEYS | apt-key add -
+CMD:		apt-get update
+CMD:		apt-key adv --keyserver pool.sks-keyservers.net --recv-key A278B781FE4B2BDA
+CMD:		apt-get update
+CMD:		apt-get install cassandra -y --allow-unauthenticated
+CMD:		service cassandra start
+CMD:		service cassandra status
+CMD:		nodetool status
+CMD:		cqlsh
+CQL SHELL:	create keyspace fresco with replication ={'class':'SimpleStrategy', 'replication_factor':1};
+CQL SHELL:	use fresco
+CQL SHELL:	describe fresco
+CQL SHELL:	create table play (courseid int primary key, coursename varchar, miles int, credit float);
+CQL SHELL:	insert into play (courseid, coursename, miles, credit) values (1,'Python',150,1);
+CQL SHELL:	insert into play (courseid, coursename, miles, credit) values (2,'Spark',150,0.5);
+CQL SHELL:	insert into play (courseid, coursename, miles, credit) values (3,'R',100,0.25);
+CQL SHELL:	insert into play (courseid, coursename, miles, credit) values (4,'HBase',150,0.5);
+CQL SHELL:	create index test on play(courseid);
+CQL SHELL:	copy play(courseid, coursename, miles, credit) to 'path to file.csv' with header=true;
+*********************************************************************************************************************************
+------------------------------------------------------------------------------------------------
+Hadoop Installation:
+------------------------------------------------------------------------------------------------
+CMD:		sudo apt install openjdk-8-jre-headless
+CMD:		wget https://archive.apache.org/dist/hadoop/core/hadoop-2.7.6/hadoop-2.7.6.tar.gz
+CMD:		tar -xzvf hadoop-2.7.6.tar.gz
+CMD:		vi ~/.bashrc
+bashrc:		export HADOOP_HOME=/home/lurisan/hadoop-2.7.6 
+		export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin	
+CMD:		source ~/.bashrc
+CMD:		cd
+CMD:		vi /home/lurisan/hadoop-2.7.6/etc/hadoop/hadoop-env.sh
+hadoop-env:	export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre/
+CMD:		cd
+CMD:		vi /home/lurisan/hadoop-2.7.6/etc/hadoop/corn-site.xml	
+core-site:	<configuration>
+			<property>
+ 				<name>fs.default.name</name>
+				<value>hdfs://localhost/</value>
+			</property>
+		</configuration>
+CMD:		cd
+CMD:		vi /home/lurisan/hadoop-2.7.6/etc/hadoop/hdfs-site.xml
+hdfs-site:	<configuration>
+ 			<property>
+				<name>dfs.replication</name>
+				<value>1</value>
+			</property>
+		</configuration>
+CMD:		cd
+CMD:		vi /home/lurisan/hadoop-2.7.6/etc/hadoop/mapred-site.xml
+mapred-site:	<configuration>
+     			<property>
+     				<name>mapreduce.framework.name</name>
+     				<value>yarn</value>
+     			</property>
+     		</configuration>
+CMD:		cd
+CMD:		vi /home/lurisan/hadoop-2.7.6/etc/hadoop/yarn-site.xml
+yarn-site:	<configuration>
+ 			<property>
+ 				<name>yarn.nodemanager.aux-services</name>
+				<value>mapreduce_shuffle</value>
+ 			</property>
+ 		</configuration>
+CMD:		hdfs namenode -format
+CMD:		start-dfs.sh
+CMD:		start-yarn.sh
+CMD:		jps
+
+
+------------------------------------------------------------------------------------------------
+MapReduce Hadoop Example
+------------------------------------------------------------------------------------------------
+
+<Setting up new user to use hadoop>
+CMD:	useradd hadoop  
+CMD:	passwd Hadoop
+CMD:	ssh-keygen -t rsa 
+CMD:	cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+CMD:	chmod 0600 ~/.ssh/authorized_keys
+
+
+
+CMD:	hdfs namenode -format
+CMD:	start-all.sh
+CMD:	mkdir lab
+CMD:	git clone https://github.com/ledinhtri97/hadoop-mapreduce-maximum-month-temperature.git
+CMD:	cd hadoop-mapreduce-maximum-month-temperature/
+CMD:	javac -classpath hadoop-core-1.2.1.jar -d lab MaxMonTem.java
+CMD:	jar -cvf lab.jar -C lab/ .
+CMD:	hadoop fs -mkdir /input-dir
+CMD:	hadoop fs -put data_tem.txt /input-dir
+CMD:	hadoop fs -ls /input-dir
+CMD:	hadoop jar lab.jar trimo.hadoop.MaxMonTem /input-dir /output-dir
+CMD:	hadoop fs -ls /output-dir/
+CMD:	hadoop fs -cat /output-dir/part-00000
+
+
+CMD:	hdfs namenode -format
+CMD:	start-all.sh
+CMD:	mkdir lab
+CMD:	wget https://github.com/ledinhtri97/hadoop-mapreduce-maximum-month-temperature/raw/master/hadoop-core-1.2.1.jar
+CMD:	wget https://gist.githubusercontent.com/frescoplaylab/61696bf34e0f220c37068b9e52ca9efd/raw/20fb0c8c5a9e7d6f3f59d3ad1b7f58d992409b61/top5.java
+CMD:	javac -classpath hadoop-core-1.2.1.jar -d lab top5.java
+CMD:	jar -cvf lab.jar -C lab/ .
+CMD:	cp youtube.txt /tmp
+CMD:	hadoop fs -mkdir /input-dir
+CMD:	hadoop fs -put /tmp/youtube.txt /input-dir
+CMD:	hadoop fs -ls /input-dir
+CMD:	export HADOOP_CLASSPATH=lab.jar
+CMD:	hadoop top5 /input-dir /output-dir
+CMD:	hadoop fs -ls /output-dir/
+CMD:	hadoop fs -cat /output-dir/part-r-00000
+
+
+CMD:	hdfs namenode -format
+CMD:	start-all.sh
+CMD:	mkdir lab
+CMD:	wget https://github.com/ledinhtri97/hadoop-mapreduce-maximum-month-temperature/raw/master/hadoop-core-1.2.1.jar
+CMD:	wget https://gist.githubusercontent.com/frescoplaylab/dfce20f3326d21f3d3f1d504c04534cc/raw/4474f157403bf27c41d9f027349108a32b966942/Average_age.java
+CMD:	wget https://gist.githubusercontent.com/frescoplaylab/0ac566e3a04412831afe41663a4d5075/raw/5ab7c0c34b86011b42b469de382da2c7a2e7eff5/titanic.txt
+CMD:	javac -classpath hadoop-core-1.2.1.jar -d lab Average_age.java
+CMD:	jar -cvf lab.jar -C lab/ .
+CMD:	hadoop fs -mkdir /input-dir
+CMD:	hadoop fs -put titanic.txt /input-dir
+CMD:	hadoop fs -ls /input-dir
+CMD:	export HADOOP_CLASSPATH=lab.jar
+CMD:	hadoop Average_age /input-dir /output-dir
+CMD:	hadoop fs -ls /output-dir/
+CMD:	hadoop fs -cat /output-dir/part-r-00000
+
+*********************************************************************************************************************************
+------------------------------------------------------------------------------------------------
+Sqoop Installation and Import MYSQL data to Hadoop:
+------------------------------------------------------------------------------------------------
+CMD:		wget http://mirrors.estointernet.in/apache/sqoop/1.4.7/sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz
+CMD:		tar -xzvf sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz
+CMD:		mv sqoop-1.4.7.bin__hadoop-2.6.0 /home/lurisan/sqoop
+CMD:		vi ~/.bashrc
+bashrc:		export SQOOP_HOME=/home/lurisan/sqoop
+		export PATH=$PATH:$SQOOP_HOME/bin
+CMD:		source ~/.bashrc
+CMD:		cd
+CMD:		wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.47.tar.gz
+CMD:		tar -xzvf mysql-connector-java-5.1.47.tar.gz
+CMD:		cp /home/lurisan/mysql-connector-java-5.1.47/mysql-connector-java-5.1.47-bin.jar /home/lurisan/sqoop/lib/
+CMD:		cd /home/lurisan/sqoop/lib
+CMD:		git clone https://github.com/frescoplaylab/Sqoop_Test.git
+CMD:		cd /home/lurisan/sqoop/conf
+CMD:		cp sqoop-env-template.sh sqoop-env.sh
+CMD:		mv /home/lurisan/sqoop/conf/sqoop-env-template.sh /home/lurisan/sqoop/conf/sqoop-env.sh.template
+CMD:		vi sqoop-env.sh
+sqoop-env:	export HADOOP_HOME=/home/lurisan/hadoop-2.7.6 
+		export HADOOP_MAPRED_HOME=/home/lurisan/hadoop-2.7.6
+CMD:		cd /home/lurisan/sqoop/bin
+CMD:		sqoop version
+CMD:		sqoop list-databases --connect jdbc:mysql://localhost --username root --password root
+CMD:		sqoop list-tables --connect jdbc:mysql://localhost/arani --username root --password root
+CMD:		sqoop import --connect jdbc:mysql://localhost/arani --username root --password root --table <table_name> -m 1
+*********************************************************************************************************************************
+------------------------------------------------------------------------------------------------
+Flume Installation:
+------------------------------------------------------------------------------------------------
+CMD:		wget http://mirrors.estointernet.in/apache/flume/1.8.0/apache-flume-1.8.0-bin.tar.gz
+		curl -LO http://mirrors.estointernet.in/apache/flume/1.8.0/apache-flume-1.8.0-bin.tar.gz
+CMD:		tar -xvzf apache-flume-1.8.0-bin.tar.gz
+CMD:		mv ./apache-flume-1.8.0-bin /root/flume
+CMD:		vi ~/.bashrc
+bashrc:		export FLUME_HOME=/root/flume
+		export FLUME_CONF_DIR=$FLUME_HOME/conf
+		export FLUME_CLASS_PATH=$FLUME_CONF_DIR
+		export PATH=$FLUME_HOME/bin:$PATH
+CMD:		source ~/.bashrc
+CMD:		flume-ng
+CMD:		cd $FLUME_HOME/conf
+CMD:		cp flume-conf.properties.template flume-conf-netcat.properties
+CMD:		vi flume-conf-netcat.properties
+flume-conf..:	#Define the sources, channels, and sinks
+		na.sources = s1
+		na.sinks = l1
+		na.channels = c1
+		
+		# Describe/configure the source
+		na.sources.s1.type = netcat
+		na.sources.s1.bind = localhost
+		na.sources.s1.port = 44444
+		
+		# Describe the sink
+		na.sinks.l1.type = logger
+		
+		# Use a channel which buffers events in memory
+		na.channels.c1.type = memory
+		na.channels.c1.capacity = 100
+		na.channels.c1.transactionCapacity = 100
+		
+		# Bind the source and sink to the channel
+		na.sources.s1.channels = c1
+		na.sinks.l1.channel = c1
+CMD:		cd /root/flume/bin
+CMD:		./flume-ng agent -n na -c conf -f ../conf/flume-conf-netcat.properties
+CMD2:		apt-get update && apt-get install telnet
+CMD2:		telnet localhost 44444
+telnet:		hello
+CMD:		~data recieved on flume:  Event: { headers:{} body: 68 65 6C 6C 6F 0D                               hello. }~
+CMD:		ctrl + c
+CMD:		cd ..
+CMD:		cd conf
+CMD:		cp flume-conf.properties.template flume-conf-hdfs.properties
+CMD:		vi flume-conf-netcat.properties
+flume-conf..:	ha.sources = hdfs-source
+		ha.sinks = hdfs-write
+		ha.channels = memchannel
+		
+		# Describe/configure the source
+		ha.sources.hdfs-source.type = netcat
+		ha.sources.hdfs-source.bind = localhost
+		ha.sources.hdfs-source.port = 22222
+		
+		# Describe the sink
+		ha.sinks.hdfs-write.type = hdfs
+		ha.sinks.hdfs-write.hdfs.path = hdfs://localhost:9000/flume-demo/
+		ha.sinks.hdfs-write.hdfs.roll.Interval = 30
+		ha.sinks.hdfs-write.hdfs.fileType = DataStream
+		
+		# Use a channel which buffers events in memory
+		ha.channels.memchannel.type = memory
+		ha.channels.memchannel.capacity = 1000
+		ha.channels.memchannel.transactionCapacity = 100
+		
+		# Bind the source and sink to the channel
+		ha.sources.hdfs-source.channels = memchannel
+		ha.sinks.hdfs-write.channel = memchannel
+CMD:		cd /root/flume/bin
+CMD:		./flume-ng agent -n ha -c conf -f ../conf/flume-conf-hdfs.properties
+CMD2:		hadoop fs -mkdir /flume-demo
+CMD2:		vi log.txt
+CMD2:		~ insert logs ~
+CMD2:		head -n 5 log.txt | nc localhost 22222
+Remote:		check in hadoop webpage inclusion of log
+*********************************************************************************************************************************
+------------------------------------------------------------------------------------------------
+Hive Installation:
+------------------------------------------------------------------------------------------------
+CMD:		wget http://archive.apache.org/dist/hive/hive-2.1.0/apache-hive-2.1.0-bin.tar.gz
+CMD:		tar -xzf apache-hive-2.1.0-bin.tar.gz
+CMD:		vi ~/.bashrc
+BASHRC:		export HIVE_HOME=/home/lurisan/apache-hive-2.1.0-bin
+BASHRC:		export PATH=$PATH:/home/lurisan/apache-hive-2.1.0-bin/bin
+CMD:		source ~/.bashrc
+CMD:		hive --version
+CMD:		hdfs dfs -mkdir -p /hive/warehouse
+CMD:		hdfs dfs -mkdir /tmp
+CMD:		hdfs dfs -chmod g+w /hive/warehouse
+CMD:		hdfs dfs -chmod g+w /tmp
+CMD:		vi apache-hive-2.1.0-bin/conf/hive-env.sh
+CMD:		vi apache-hive-2.1.0-bin/conf/hive-site.xml
+HIVE-Site:	<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+		<?xml-stylesheet type="text/xsl" href="configuration.xsl"?><!--
+		Licensed to the Apache Software Foundation (ASF) under one or more
+		contributor license agreements. See the NOTICE file distributed with
+		this work for additional information regarding copyright ownership.
+		The ASF licenses this file to You under the Apache License, Version 2.0
+		(the "License"); you may not use this file except in compliance with
+		the License. You may obtain a copy of the License at
+		
+		http://www.apache.org/licenses/LICENSE-2.0
+		
+		Unless required by applicable law or agreed to in writing, software
+		distributed under the License is distributed on an "AS IS" BASIS,
+		WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+		See the License for the specific language governing permissions and
+		limitations under the License.
+		-->
+		<configuration>
+			<property>
+				<name>javax.jdo.option.ConnectionURL</name>
+				<value>jdbc:derby:;databaseName=/home/edureka/apache-hive-2.1.0-bin/metastore_db;create=true</value>
+				<description>
+					JDBC connect string for a JDBC metastore.
+					To use SSL to encrypt/authenticate the connection, provide database-specific SSL flag in the connection URL. 
+					For example, jdbc:postgresql://myhost/db?ssl=true for postgres database.
+				</description>
+			</property>
+			<property>
+				<name>hive.metastore.warehouse.dir</name>
+				<value>/user/hive/warehouse</value>
+				<description>location of default database for the warehouse</description>
+			</property>
+			<property>
+				<name>hive.metastore.uris</name>
+				<value/>
+				<description>Thrift URI for the remote metastore. Used by metastore client to connect to remote metastore.</description>
+			</property>
+			<property>
+				<name>javax.jdo.option.ConnectionDriverName</name>
+				<value>org.apache.derby.jdbc.EmbeddedDriver</value>
+				<description>Driver class name for a JDBC metastore</description>
+			</property>
+			<property>
+				<name>javax.jdo.PersistenceManagerFactoryClass</name>
+				<value>org.datanucleus.api.jdo.JDOPersistenceManagerFactory</value>
+				<description>class implementing the jdo persistence</description>
+			</property>
+		</configuration>
+CMD:		/home/lurisan/apache-hive-2.1.0-bin/bin/schematool -initSchema -dbType derby
+CMD:		hive
+
+<if hive doesnt run>
+CMD:		mv metastore_db metastore_db.tmp
+CMD:		schematool -initSchema -dbType derby
+CMD:		hive
+HIVE SHELL:	set hive.exec.dynamic.partition=true;
+HIVE SHELL:	set hive.exec.dynamic.partition.mode=nonstrict;
+HIVE SHELL:	set hive.exec.max.dynamic.partitions=20000;
+HIVE SHELL:	set hive.exec.max.dynamic.partitions.pernode=20000;
+HIVE SHELL:	set hive.enforce.bucketing=true;
+HIVE SHELL:	create table states_hand_bucketed (street string, zip int, state string, beds int, baths int, price int) partitioned by (city string) clustered by (street) into 4 buckets row format delimited fields terminated by ',';
+HIVE SHELL:	insert into table states_hand_bucketed partition(city) select street, city, zip, state, beds, baths, price from states_hand;
+HIVE SHELL:	select * from states_hand_bucketed tablesample(bucket 2 out of 4 on city);
+*********************************************************************************************************************************
